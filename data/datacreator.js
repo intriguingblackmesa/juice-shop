@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2020 Bjoern Kimminich.
+ * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
  */
 
@@ -42,7 +42,6 @@ module.exports = async () => {
     createRecycleItem,
     createOrders,
     createQuantity,
-    createPurchaseQuantity,
     createWallet,
     createDeliveryMethods,
     createMemories
@@ -101,7 +100,7 @@ async function createUsers () {
           password,
           role,
           deluxeToken: role === insecurity.roles.deluxe ? insecurity.deluxeToken(completeEmail) : '',
-          profileImage: `assets/public/images/uploads/${profileImage || 'default.svg'}`,
+          profileImage: `assets/public/images/uploads/${profileImage || (role === insecurity.roles.admin ? 'defaultAdmin.png' : 'default.svg')}`,
           totpSecret
         })
         datacache.users[key] = user
@@ -169,7 +168,7 @@ function createAddresses (UserId, addresses) {
 }
 
 function createCards (UserId, cards) {
-  cards.map((card) => {
+  return Promise.all(cards.map((card) => {
     return models.Card.create({
       UserId: UserId,
       fullName: card.fullName,
@@ -179,7 +178,7 @@ function createCards (UserId, cards) {
     }).catch((err) => {
       logger.error(`Could not create card: ${err.message}`)
     })
-  })
+  }))
 }
 
 function deleteUser (userId) {
@@ -226,15 +225,15 @@ function createQuantity () {
 }
 
 function createMemories () {
-  const memories = [models.Memory.create({
-    imagePath: 'assets/public/images/uploads/😼-#zatschi-#whoneedsfourlegs-1572600969477.jpg',
-    caption: '😼 #zatschi #whoneedsfourlegs',
-    UserId: datacache.users.bjoernOwasp.id
-  }).catch((err) => {
-    logger.error(`Could not create memory: ${err.message}`)
-  })]
-  Array.prototype.push.apply(memories, Promise.all(
-    utils.thaw(config.get('memories')).map((memory) => {
+  const memories = [
+    models.Memory.create({
+      imagePath: 'assets/public/images/uploads/😼-#zatschi-#whoneedsfourlegs-1572600969477.jpg',
+      caption: '😼 #zatschi #whoneedsfourlegs',
+      UserId: datacache.users.bjoernOwasp.id
+    }).catch((err) => {
+      logger.error(`Could not create memory: ${err.message}`)
+    }),
+    ...utils.thaw(config.get('memories')).map((memory) => {
       let tmpImageFileName = memory.image
       if (utils.startsWith(memory.image, 'http')) {
         const imageUrl = memory.image
@@ -257,8 +256,9 @@ function createMemories () {
         logger.error(`Could not create memory: ${err.message}`)
       })
     })
-  ))
-  return memories
+  ]
+
+  return Promise.all(memories)
 }
 
 function createProducts () {
@@ -285,19 +285,19 @@ function createProducts () {
   })
 
   // add Challenge specific information
-  const chrismasChallengeProduct = products.find(({ useForChristmasSpecialChallenge }) => useForChristmasSpecialChallenge)
+  const christmasChallengeProduct = products.find(({ useForChristmasSpecialChallenge }) => useForChristmasSpecialChallenge)
   const pastebinLeakChallengeProduct = products.find(({ keywordsForPastebinDataLeakChallenge }) => keywordsForPastebinDataLeakChallenge)
   const tamperingChallengeProduct = products.find(({ urlForProductTamperingChallenge }) => urlForProductTamperingChallenge)
-  const blueprintRetrivalChallengeProduct = products.find(({ fileForRetrieveBlueprintChallenge }) => fileForRetrieveBlueprintChallenge)
+  const blueprintRetrievalChallengeProduct = products.find(({ fileForRetrieveBlueprintChallenge }) => fileForRetrieveBlueprintChallenge)
 
-  chrismasChallengeProduct.description += ' (Seasonal special offer! Limited availability!)'
-  chrismasChallengeProduct.deletedAt = '2014-12-27 00:00:00.000 +00:00'
+  christmasChallengeProduct.description += ' (Seasonal special offer! Limited availability!)'
+  christmasChallengeProduct.deletedAt = '2014-12-27 00:00:00.000 +00:00'
   tamperingChallengeProduct.description += ' <a href="' + tamperingChallengeProduct.urlForProductTamperingChallenge + '" target="_blank">More...</a>'
   tamperingChallengeProduct.deletedAt = null
   pastebinLeakChallengeProduct.description += ' (This product is unsafe! We plan to remove it from the stock!)'
   pastebinLeakChallengeProduct.deletedAt = '2019-02-1 00:00:00.000 +00:00'
 
-  let blueprint = blueprintRetrivalChallengeProduct.fileForRetrieveBlueprintChallenge
+  let blueprint = blueprintRetrievalChallengeProduct.fileForRetrieveBlueprintChallenge
   if (utils.startsWith(blueprint, 'http')) {
     const blueprintUrl = blueprint
     blueprint = utils.extractFilename(blueprint)
@@ -372,7 +372,7 @@ function createBaskets () {
 
   return Promise.all(
     baskets.map(basket => {
-      models.Basket.create(basket).catch((err) => {
+      return models.Basket.create(basket).catch((err) => {
         logger.error(`Could not insert Basket for UserId ${basket.UserId}: ${err.message}`)
       })
     })
@@ -425,7 +425,7 @@ function createBasketItems () {
 
   return Promise.all(
     basketItems.map(basketItem => {
-      models.BasketItem.create(basketItem).catch((err) => {
+      return models.BasketItem.create(basketItem).catch((err) => {
         logger.error(`Could not insert BasketItem for BasketId ${basketItem.BasketId}: ${err.message}`)
       })
     })
@@ -579,14 +579,16 @@ function createOrders () {
       id: products[0].id,
       name: products[0].name,
       price: products[0].price,
-      total: products[0].price * 3
+      total: products[0].price * 3,
+      bonus: Math.round(products[0].price / 10) * 3
     },
     {
       quantity: 1,
       id: products[1].id,
       name: products[1].name,
       price: products[1].price,
-      total: products[1].price * 1
+      total: products[1].price * 1,
+      bonus: Math.round(products[1].price / 10) * 1
     }
   ]
 
@@ -596,7 +598,8 @@ function createOrders () {
       id: products[2].id,
       name: products[2].name,
       price: products[2].price,
-      total: products[2].price * 3
+      total: products[2].price * 3,
+      bonus: Math.round(products[2].price / 10) * 3
     }
   ]
 
@@ -606,14 +609,16 @@ function createOrders () {
       id: products[0].id,
       name: products[0].name,
       price: products[0].price,
-      total: products[0].price * 3
+      total: products[0].price * 3,
+      bonus: Math.round(products[0].price / 10) * 3
     },
     {
       quantity: 5,
       id: products[3].id,
       name: products[3].name,
       price: products[3].price,
-      total: products[3].price * 5
+      total: products[3].price * 5,
+      bonus: Math.round(products[3].price / 10) * 5
     }
   ]
 
@@ -622,6 +627,7 @@ function createOrders () {
       orderId: insecurity.hash(email).slice(0, 4) + '-' + utils.randomHexString(16),
       email: (email ? email.replace(/[aeiou]/gi, '*') : undefined),
       totalPrice: basket1Products[0].total + basket1Products[1].total,
+      bonus: basket1Products[0].bonus + basket1Products[1].bonus,
       products: basket1Products,
       eta: Math.floor((Math.random() * 5) + 1).toString(),
       delivered: false
@@ -630,6 +636,7 @@ function createOrders () {
       orderId: insecurity.hash(email).slice(0, 4) + '-' + utils.randomHexString(16),
       email: (email ? email.replace(/[aeiou]/gi, '*') : undefined),
       totalPrice: basket2Products[0].total,
+      bonus: basket2Products[0].bonus,
       products: basket2Products,
       eta: '0',
       delivered: true
@@ -638,6 +645,7 @@ function createOrders () {
       orderId: insecurity.hash('demo').slice(0, 4) + '-' + utils.randomHexString(16),
       email: 'demo'.replace(/[aeiou]/gi, '*'),
       totalPrice: basket3Products[0].total + basket3Products[1].total,
+      bonus: basket3Products[0].bonus + basket3Products[1].bonus,
       products: basket3Products,
       eta: '0',
       delivered: true
@@ -645,11 +653,12 @@ function createOrders () {
   ]
 
   return Promise.all(
-    orders.map(({ orderId, email, totalPrice, products, eta, delivered }) =>
+    orders.map(({ orderId, email, totalPrice, bonus, products, eta, delivered }) =>
       mongodb.orders.insert({
         orderId: orderId,
         email: email,
         totalPrice: totalPrice,
+        bonus: bonus,
         products: products,
         eta: eta,
         delivered: delivered
@@ -657,33 +666,5 @@ function createOrders () {
         logger.error(`Could not insert Order ${orderId}: ${err.message}`)
       })
     )
-  )
-}
-
-function createPurchaseQuantity () {
-  const orderedQuantitys = [
-    {
-      quantity: 3,
-      ProductId: 1,
-      UserId: 1
-    },
-    {
-      quantity: 1,
-      ProductId: 2,
-      UserId: 1
-    },
-    {
-      quantity: 3,
-      ProductId: 3,
-      UserId: 1
-    }
-  ]
-
-  return Promise.all(
-    orderedQuantitys.map(orderedQuantity => {
-      models.PurchaseQuantity.create(orderedQuantity).catch((err) => {
-        logger.error(`Could not insert ordered quantity: ${err.message}`)
-      })
-    })
   )
 }

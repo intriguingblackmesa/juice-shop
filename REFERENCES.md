@@ -25,6 +25,9 @@ where this project was mentioned or used!
 
 ### Pod- & Webcasts
 
+* [Learn Web App Security Penetration Testing with Juice Shop \[Free\]](https://youtu.be/ShUTDUYEMWA)
+  by
+  [Gerald Auger - Simply Cyber](https://www.youtube.com/channel/UCG-48Ki-b6W_siaUkukJOSw)
 * [Web security for web developers with Zaproxy by Simon Bennetts](https://youtu.be/54UV2_JwcIY)
   with
   [Eddie Jaoude](https://www.youtube.com/channel/UC5mnBodB73bR88fLXHSfzYA)
@@ -233,21 +236,10 @@ where this project was mentioned or used!
   and
   [the `v10.0.0` release](https://owasp.org/2020/03/17/juice-shop-v10.html),
   27.-29.02.2020
-* Student project from
-  [Google Summer of Code 2019](https://summerofcode.withgoogle.com/archive/2019/projects)
-  * [OWASP Juice Shop: Feature Pack 2019](https://summerofcode.withgoogle.com/archive/2019/projects/6526397403627520/)
-    by Arpit Agrawal (mentored by Jannik Hollenbach, Björn Kimminich and
-    Shoeb Patel)
 * [OWASP Juice Shop track](https://github.com/OpenSecuritySummit/oss2019/tree/master/content/tracks/OWASP-Juice-Shop)
   and related working sessions organized by Björn Kimminich,
   [Open Security Summit 2019](https://github.com/OpenSecuritySummit/oss2019),
   03.-07.06.2019
-* Student projects from
-  [Google Summer of Code 2018](https://summerofcode.withgoogle.com/archive/2018/projects)
-  * [OWASP Juice Shop : Challenge Pack 2018](https://summerofcode.withgoogle.com/archive/2018/projects/6267528737193984)
-    by Shoeb Patel (mentored by Jannik Hollenbach and Timo Pagel)
-  * [OWASP Juice Shop : Frontend Technology Update](https://summerofcode.withgoogle.com/archive/2018/projects/6636660909408256)
-    by Aashish Singh (mentored by Björn Kimminich)
 * Juice Shop related working sessions organized by Jannik Hollenbach and
   Timo Pagel in
   [OWASP Projects track](https://github.com/OpenSecuritySummit/oss2018/tree/master/content/tracks/OWASP-Projects),
@@ -259,10 +251,47 @@ where this project was mentioned or used!
   [OWASP Summit 2017](https://github.com/OWASP/owasp-summit-2017),
   12.-16.06.2017
 
+### [Google Summer of Code](http://owasp.org/gsoc)
+
+* Student project from
+  [Google Summer of Code 2020](https://summerofcode.withgoogle.com/archive/2020/projects)
+  * [Juice-Shop ChatBot and general fixes](https://summerofcode.withgoogle.com/archive/2020/projects/5660020047347712/)
+    by Mohit Sharma (mentored by Jannik Hollenbach, Björn Kimminich and
+    Timo Pagel)
+* Student project from
+  [Google Summer of Code 2019](https://summerofcode.withgoogle.com/archive/2019/projects)
+  * [OWASP Juice Shop: Feature Pack 2019](https://summerofcode.withgoogle.com/archive/2019/projects/6526397403627520/)
+    by Arpit Agrawal (mentored by Jannik Hollenbach, Björn Kimminich and
+    Shoeb Patel)
+* Student projects from
+  [Google Summer of Code 2018](https://summerofcode.withgoogle.com/archive/2018/projects)
+  * [OWASP Juice Shop : Challenge Pack 2018](https://summerofcode.withgoogle.com/archive/2018/projects/6267528737193984)
+    by Shoeb Patel (mentored by Jannik Hollenbach and Timo Pagel)
+  * [OWASP Juice Shop : Frontend Technology Update](https://summerofcode.withgoogle.com/archive/2018/projects/6636660909408256)
+    by Aashish Singh (mentored by Björn Kimminich)
+
 ## Conference and Meetup Appearances
+
+#### 2021
+
+* [Modern Web Application Hacking for Beginners](https://github.com/bkimminich/it-security-lecture/tree/workshop),
+  virtual 4h diversity training by Björn Kimminich,
+  [OWASP Training Events 2021 - 2020 SOS Re-run](https://github.com/OWASP/www-event-2021-training),
+  26.01.2021
 
 #### 2020
 
+* [FPs are Cheap. Show me the CVEs!](https://www.blackhat.com/eu-20/briefings/schedule/index.html#fps-are-cheap-show-me-the-cves-21345)
+  by Bas van Schaik & Kevin Backhouse,
+  [Black Hat Europe 2020](https://www.blackhat.com/eu-20/), 09.12.2020
+* [Juice Shop 12: Novelties by the litre (Online)](https://www.meetup.com/de-DE/OWASP-Hamburg-Stammtisch/events/272842835/)
+  by Björn Kimminich,
+  [48. OWASP Stammtisch Hamburg](https://owasp.org/www-chapter-germany/stammtische/hamburg/),
+  24.11.2020 ([Youtube](https://youtu.be/AUhDItHHLiY))
+* [Modern Web Application Hacking for Beginners](https://github.com/bkimminich/it-security-lecture/tree/workshop),
+  virtual 4h diversity training by Björn Kimminich,
+  [AppSec Days - Summer of Security 2020](https://github.com/OWASP/www-event-2020-08-virtual),
+  25.08.2020
 * [OWASP Projects Panel](https://www.meetup.com/de-DE/womeninappsec/events/271754765/)
   hosted by [OWASP WIA](https://www.meetup.com/womeninappsec/) moderated
   by Zoe Braiterman with panelists Bjoern Kimminich, Glenn & Riccardo
